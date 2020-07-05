@@ -1,0 +1,56 @@
+﻿@model DataObject.TrainVM
+@{
+
+    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+    List<DataObject.TrainCarVM> cars = Model.TrainCars;
+    for (int i = 0; i < cars.Count; i++)
+    {
+        if (i == 0)
+        {
+            sb.Append(cars[i].TrainCarDescription);
+        }
+        else
+        {
+            sb.Append(", ");
+            sb.Append(cars[i].TrainCarDescription);
+
+        }
+
+    }
+}
+
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <h4>TrainVM</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Train Name
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TrainName)
+        </dd>
+
+        <dt>
+            Route Number
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RouteID)
+        </dd>
+        <dt>
+            Coaches
+        </dt>
+        <dd>
+            @sb.ToString()
+        </dd>
+
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

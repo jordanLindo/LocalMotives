@@ -1,0 +1,32 @@
+﻿<Window x:Class="WpfPresentationLayer.frmUpdateSeat"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfPresentationLayer"
+        mc:Ignorable="d"
+        Title="Update Seat" Height="450" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="190"></ColumnDefinition>
+            <ColumnDefinition Width="10"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label x:Name="lblUpdateSeat" Grid.ColumnSpan="3" Background="Beige" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="30" Content="Update seat"></Label>
+        <Label x:Name="lblSeatID" Grid.Row="1" Grid.ColumnSpan="3" FontSize="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <Label x:Name="lblCurrentDescription" Grid.Row="2" FontSize="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="   Current&#x0a;Seat type"></Label>
+        <Label x:Name="lblDescription" Grid.Row="2" Grid.Column="2" FontSize="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <Label x:Name="lblNewDescription" Grid.Row="4" FontSize="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Content="       New&#x0a;Seat type"></Label>
+        <ComboBox x:Name="cboDescriptions" Grid.Row="4" Width="200" Height="40" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"></ComboBox>
+        <Button x:Name="btnUpdate" Grid.Row="5" Grid.ColumnSpan="3" Margin="260 20 80 20" FontSize="30" Content="Update" Click="BtnUpdate_Click"></Button>
+        <Button x:Name="btnCancel" Grid.Row="5" Grid.ColumnSpan="3" Margin="80 20 260 20" FontSize="30" Content="Cancel" Click="BtnCancel_Click"></Button>
+    </Grid>
+</Window>

@@ -1,0 +1,11 @@
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\bin\Debug\DataAccessFakes.dll
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\bin\Debug\DataAccessFakes.pdb
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\bin\Debug\DataAccessLayer.dll
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\bin\Debug\DataObject.dll
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\bin\Debug\DataAccessLayer.pdb
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\bin\Debug\DataObject.pdb
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\obj\Debug\DataAccessFakes.csprojAssemblyReference.cache
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\obj\Debug\DataAccessFakes.csproj.CoreCompileInputs.cache
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\obj\Debug\DataAccessFakes.csproj.CopyComplete
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\obj\Debug\DataAccessFakes.dll
+E:\DotNet3\FinalProject\LocalMotives\DataAccessFakes\obj\Debug\DataAccessFakes.pdb

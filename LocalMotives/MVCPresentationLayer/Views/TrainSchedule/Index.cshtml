@@ -1,0 +1,44 @@
+﻿@model IEnumerable<DataObject.TrainScheduleLineVM>
+
+<h2>@ViewBag.Title</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            Route Number
+        </th>
+        <th>
+            Arrival Time
+        </th>
+        <th>
+            Station Name
+        </th>
+        <th>
+            Train Name
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.RouteID
+            </td>
+            <td>
+                @item.ArrivalTime.ToShortTimeString()
+            </td>
+            <td>
+                @Html.ActionLink(item.StationName, "StationDetails", new { id = item.StationStartID })
+            </td>
+            <td>
+                @Html.ActionLink(item.TrainName, "TrainDetails", new { id = item.TrainID, name = item.TrainName, route = item.RouteID })
+            </td>
+            <td>
+                @Html.ActionLink("Station Schedule Details", "StationScheduleDetails", new { id = item.StationStartID }) |
+                @Html.ActionLink("Route Schedule Details", "RouteScheduleDetails", new { id = item.RouteID })
+            </td>
+        </tr>
+    }
+
+</table>

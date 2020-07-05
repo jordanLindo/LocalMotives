@@ -1,0 +1,49 @@
+﻿@model IEnumerable<DataObject.TrainScheduleLineVM>
+
+
+<h2>@ViewBag.Title</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            Route Number
+        </th>
+        <th>
+            Arrival Time
+        </th>
+        <th>
+            Station Name
+        </th>
+        <th>
+            Train Name
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RouteID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ArrivalTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StationName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrainName)
+            </td>
+            <td>
+                @Html.ActionLink("Station Details", "StationDetails", new { id = item.StationStartID })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>
+

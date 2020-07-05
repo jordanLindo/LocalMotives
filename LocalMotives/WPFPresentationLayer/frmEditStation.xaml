@@ -1,0 +1,38 @@
+﻿<Window x:Class="WpfPresentationLayer.frmEditStation"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfPresentationLayer"
+        mc:Ignorable="d"
+        Title="Edit Station" Height="450" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="10"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.ColumnSpan="3" Background="Beige"></Grid>
+        <Label x:Name="lblTitle" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Right" Content="Edit Station"></Label>
+        <Label x:Name="lblStation" FontSize="30" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
+        <Label x:Name="lblOldStationName" FontSize="25" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Content="Old Station Name:"></Label>
+        <Label x:Name="lblName" FontSize="25" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
+        <Label x:Name="lblNewStationName" FontSize="25" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right" Content="New Station Name:"></Label>
+        <TextBox x:Name="txtStationName" FontSize="20" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Padding="5" Margin="10"></TextBox>
+        <Label x:Name="lblOldStationType" FontSize="25" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right" Content="Old Station Type:"></Label>
+        <Label x:Name="lblStationType" FontSize="25" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center"></Label>
+        <Label x:Name="lblNewStationType" FontSize="25" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Right" Content="New Station Type:"></Label>
+        <ComboBox x:Name="cboStationType" FontSize="20" Grid.Row="4" Grid.Column="2" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Left" Padding="5" Margin="10"></ComboBox>
+        <Button x:Name="btnCancel" FontSize="30" FontWeight="DemiBold" Grid.Row="6" Content="Cancel" Margin="30 10" Click="BtnCancel_Click"></Button>
+        <Button x:Name="btnSubmit" FontSize="30" FontWeight="DemiBold" Grid.Row="6" Grid.Column="2" Content="Submit" Margin="30 10" Click="BtnSubmit_Click"></Button>
+    </Grid>
+</Window>

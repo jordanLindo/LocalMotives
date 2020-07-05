@@ -1,0 +1,91 @@
+﻿@model DataObject.TrainVM
+
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>@Model.TrainID</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.TrainID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TrainName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TrainName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TrainName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RouteID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RouteID, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RouteID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Active, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.Active)
+                    @Html.ValidationMessageFor(model => model.Active, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @{
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                bool first = true;
+                foreach (DataObject.TrainCarVM car in Model.TrainCars)
+                {
+                    sb.Append(car.TrainCarDescription);
+                    if (!first)
+                    {
+                        sb.Append(", ");
+                    }
+                    else
+                    {
+                        first = false;
+                    }
+                }
+            }
+            <table>
+                <thead>
+                    <tr>
+                        <th>Car List</th>
+                        <td class="empty-td"></td>
+                        <td>@sb.ToString()</td>
+                        <td>@Html.ActionLink("Details", "TrainCarsList", new { trainID = Model.TrainID })</td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<link href="~/Content/Table.css" rel="stylesheet" />
+

@@ -1,0 +1,46 @@
+﻿@model DataObject.TrainCarVM
+
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <h4>TrainCarVM</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CoachTypeID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CoachTypeID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CarListID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CarListID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TrainCarDescription)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TrainCarDescription)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SeatListID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SeatListID)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "TrainCarsList", new { trainID=ViewBag.TrainID })
+</p>

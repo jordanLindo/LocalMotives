@@ -1,0 +1,33 @@
+﻿@model DataObject.Station
+
+@{
+    ViewBag.Title = "StationDetails";
+}
+
+<h2>StationDetails</h2>
+
+<div>
+    <h4>Station</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.StationName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StationName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StationType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StationType)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

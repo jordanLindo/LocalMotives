@@ -1,0 +1,11 @@
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\bin\Debug\LogicLayer.dll
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\bin\Debug\LogicLayer.pdb
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\bin\Debug\DataAccessLayer.dll
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\bin\Debug\DataObject.dll
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\bin\Debug\DataAccessLayer.pdb
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\bin\Debug\DataObject.pdb
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\obj\Debug\LogicLayer.csprojAssemblyReference.cache
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\obj\Debug\LogicLayer.csproj.CoreCompileInputs.cache
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\obj\Debug\LogicLayer.csproj.CopyComplete
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\obj\Debug\LogicLayer.dll
+E:\DotNet3\FinalProject\LocalMotives\LogicLayer\obj\Debug\LogicLayer.pdb
