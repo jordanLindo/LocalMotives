@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using DataObject;
+using LogicLayer;
+using LogicLayerUtilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -10,20 +14,23 @@ using MVCPresentationLayer.Models;
 
 namespace MVCPresentationLayer.Controllers
 {
-    [Authorize]
+    
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IUserManager _usrManager;
 
         public ManageController()
         {
+            _usrManager = new UserManager();
         }
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            _usrManager = new UserManager();
         }
 
         public ApplicationSignInManager SignInManager
@@ -32,9 +39,9 @@ namespace MVCPresentationLayer.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -52,8 +59,12 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // GET: /Manage/Index
+        [Authorize]
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
+            ViewBag.Title = "Profile";
+            User user = _usrManager.GetUserByEmail(User.Identity.Name);
+            ViewBag.User = user;
             ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
@@ -72,11 +83,13 @@ namespace MVCPresentationLayer.Controllers
                 Logins = await UserManager.GetLoginsAsync(userId),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
             };
+            model.PhoneNumber = PhoneNumberManager.FormatPhoneNumberForOutput(user.PhoneNumber);
             return View(model);
         }
 
         //
         // POST: /Manage/RemoveLogin
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
@@ -99,8 +112,61 @@ namespace MVCPresentationLayer.Controllers
             return RedirectToAction("ManageLogins", new { Message = message });
         }
 
+
+        //
+        // GET:/Manage/EditPhoneNumber
+        [Authorize]
+        public ActionResult EditPhoneNumber(string email)
+        {
+            ViewBag.Title = "Edit Phone Number";
+            User user = _usrManager.GetUserByEmail(email);
+            string currentNumber = PhoneNumberManager.PhoneNumberFixer(user.PhoneNumber);
+            currentNumber = PhoneNumberManager.FormatPhoneNumberForOutput(currentNumber);
+            user.PhoneNumber = currentNumber;
+            ViewBag.CurrentNumber = currentNumber;
+            ViewBag.Failure = "";
+            return View(user);
+        }
+
+
+        //
+        // POST: /Manage/EditPhoneNumber
+        [Authorize]
+        [HttpPost]
+        public ActionResult EditPhoneNumber(User user)
+        {
+            User oldUser = _usrManager.GetUserByEmail(user.Email);
+            string phoneNumber = user.PhoneNumber;
+            phoneNumber = PhoneNumberManager.PhoneNumberFixer(phoneNumber);
+            if (PhoneNumberManager.IsGoodLengthAfterFix(phoneNumber))
+            {
+                User newUser = new User
+                {
+                    Active = oldUser.Active,
+                    Email = oldUser.Email,
+                    EmployeeID = oldUser.EmployeeID,
+                    FirstName = oldUser.FirstName,
+                    LastName = oldUser.LastName,
+                    PasswordHash = oldUser.PasswordHash,
+                    PhoneNumber = phoneNumber,
+                    Roles = oldUser.Roles
+                };
+                string oldPhoneNumber = oldUser.PhoneNumber;
+                if (newUser.PhoneNumber != oldPhoneNumber)
+                {
+                    _usrManager.UpdateUser(oldUser, newUser);
+                }
+                ViewBag.Failure = "";
+                return RedirectToAction("Index", "Manage");
+            }
+            ViewBag.Failure = "Invalid number.";
+            return View(oldUser);
+
+        }
+
         //
         // GET: /Manage/AddPhoneNumber
+        [Authorize]
         public ActionResult AddPhoneNumber()
         {
             return View();
@@ -108,30 +174,45 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // POST: /Manage/AddPhoneNumber
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
+        public ActionResult AddPhoneNumber(AddPhoneNumberViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            // Generate the token and send it
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
-            if (UserManager.SmsService != null)
+
+            User user = _usrManager.GetUserByEmail(User.Identity.Name);
+            User newUser = user;
+            string fixedNumber = PhoneNumberManager.PhoneNumberFixer(model.Number);
+            if (PhoneNumberManager.IsGoodLengthAfterFix(fixedNumber))
             {
-                var message = new IdentityMessage
-                {
-                    Destination = model.Number,
-                    Body = "Your security code is: " + code
-                };
-                await UserManager.SmsService.SendAsync(message);
+                newUser.PhoneNumber = fixedNumber;
+                _usrManager.UpdateUser(user, newUser);
             }
-            return RedirectToAction("VerifyPhoneNumber", new { PhoneNumber = model.Number });
+
+
+
+            //// Generate the token and send it
+            //var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
+            //if (UserManager.SmsService != null)
+            //{
+            //    var message = new IdentityMessage
+            //    {
+            //        Destination = model.Number,
+            //        Body = "Your security code is: " + code
+            //    };
+            //    await UserManager.SmsService.SendAsync(message);
+            //}
+
+            return RedirectToAction("Index", "Manage");
         }
 
         //
         // POST: /Manage/EnableTwoFactorAuthentication
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EnableTwoFactorAuthentication()
@@ -147,6 +228,7 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // POST: /Manage/DisableTwoFactorAuthentication
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DisableTwoFactorAuthentication()
@@ -162,6 +244,7 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // GET: /Manage/VerifyPhoneNumber
+        [Authorize]
         public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
@@ -171,6 +254,7 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // POST: /Manage/VerifyPhoneNumber
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
@@ -194,8 +278,11 @@ namespace MVCPresentationLayer.Controllers
             return View(model);
         }
 
+
+
         //
         // POST: /Manage/RemovePhoneNumber
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RemovePhoneNumber()
@@ -215,6 +302,7 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // GET: /Manage/ChangePassword
+        [Authorize]
         public ActionResult ChangePassword()
         {
             return View();
@@ -222,6 +310,7 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // POST: /Manage/ChangePassword
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -246,6 +335,7 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // GET: /Manage/SetPassword
+        [Authorize]
         public ActionResult SetPassword()
         {
             return View();
@@ -253,6 +343,7 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // POST: /Manage/SetPassword
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> SetPassword(SetPasswordViewModel model)
@@ -278,6 +369,7 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // GET: /Manage/ManageLogins
+        [Authorize]
         public async Task<ActionResult> ManageLogins(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
@@ -301,6 +393,7 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // POST: /Manage/LinkLogin
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LinkLogin(string provider)
@@ -311,6 +404,7 @@ namespace MVCPresentationLayer.Controllers
 
         //
         // GET: /Manage/LinkLoginCallback
+        [Authorize]
         public async Task<ActionResult> LinkLoginCallback()
         {
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
@@ -333,7 +427,7 @@ namespace MVCPresentationLayer.Controllers
             base.Dispose(disposing);
         }
 
-#region Helpers
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
@@ -384,6 +478,6 @@ namespace MVCPresentationLayer.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

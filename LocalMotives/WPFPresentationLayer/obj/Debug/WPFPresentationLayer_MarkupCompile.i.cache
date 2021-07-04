@@ -1,10 +1,10 @@
 ﻿WPFPresentationLayer
 
 
-library
+winexe
 C#
 .cs
-E:\DotNet3\FinalProject\LocalMotives\WPFPresentationLayer\obj\Debug\
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\WPFPresentationLayer\obj\Debug\
 WPFPresentationLayer
 none
 false
@@ -12,9 +12,9 @@ DEBUG;TRACE
 
 13-934707900
 
-15662936342
-18138322851
+15-1200400651
+182110846941
 App.xaml;EmployeeHome.xaml;frmAddSeat.xaml;frmAddStation.xaml;frmEditSeatType.xaml;frmEditStation.xaml;frmEditTrain.xaml;frmStationList.xaml;frmUpdateCustomer.xaml;frmUpdatePassword.xaml;frmUpdateSeat.xaml;frmUpdateUser.xaml;MainWindow.xaml;
 
-False
+True
 

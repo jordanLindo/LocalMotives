@@ -43,12 +43,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ListManager.cs" />
+    <Compile Include="PhoneNumberManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataAccessUtilities\DataAccessUtilities.csproj">
       <Project>{1a810a45-8db7-42a8-bf5b-018ff1f043c6}</Project>
       <Name>DataAccessUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataObject\DataObject.csproj">
+      <Project>{10353618-D556-4DAC-B8E7-C8AD164B3A33}</Project>
+      <Name>DataObject</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

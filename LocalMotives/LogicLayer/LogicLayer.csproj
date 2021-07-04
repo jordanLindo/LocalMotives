@@ -66,6 +66,10 @@
       <Project>{10353618-d556-4dac-b8e7-c8ad164b3a33}</Project>
       <Name>DataObject</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LogicLayerUtilities\LogicLayerUtilities.csproj">
+      <Project>{c3567169-047a-417b-8bbd-387e6bf3254c}</Project>
+      <Name>LogicLayerUtilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

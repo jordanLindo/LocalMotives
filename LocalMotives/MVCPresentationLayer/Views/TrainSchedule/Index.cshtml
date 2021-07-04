@@ -1,6 +1,21 @@
 ﻿@model IEnumerable<DataObject.TrainScheduleLineVM>
 
-<h2>@ViewBag.Title</h2>
+<table>
+    <tr>
+        <th>
+            <h2>@ViewBag.Title</h2>
+        </th>
+        @{
+            if (ViewBag.Roles != null && ViewBag.Roles.Contains("Manager"))
+            {
+                <th style="width:60px;"></th>
+                <th>
+                    @Html.ActionLink("Create New Train Schedule", "CreateNewTrainSchedule")
+                </th>
+            }
+        }
+    </tr>
+</table>
 
 <table class="table">
     <tr>
@@ -26,7 +41,7 @@
                 @item.RouteID
             </td>
             <td>
-                @item.ArrivalTime.ToShortTimeString()
+                @item.ArrivalTime
             </td>
             <td>
                 @Html.ActionLink(item.StationName, "StationDetails", new { id = item.StationStartID })

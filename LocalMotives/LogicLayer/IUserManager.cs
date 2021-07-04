@@ -7,6 +7,8 @@ namespace LogicLayer
     {
         User AuthenticateUser(string email, string password);
 
+        User GetUserByEmail(string email);
+
         bool UpdatePassword(int employeeID, string oldPassword, string newPassword);
 
         List<User> RetrieveUserListByActive(bool active = true);
@@ -30,5 +32,7 @@ namespace LogicLayer
         bool FindUser(string email);
 
         int RetrieveUserIDFromEmail(string email);
+
+        int CountAdmin();
     }
 }

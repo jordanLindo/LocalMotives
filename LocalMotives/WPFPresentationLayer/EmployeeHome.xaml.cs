@@ -1,5 +1,6 @@
 ﻿using DataObject;
 using LogicLayer;
+using LogicLayerUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,37 +96,36 @@ namespace WpfPresentationLayer
 
         private void showTrainTab()
         {
-            calTrainSchedule.SelectedDate = DateTime.Now.AddMonths(3);
             btnTrain.Visibility = Visibility.Visible;
-            btnTrain.Height = 25;
+            btnTrain.Height = 50;
             btnTrain.Margin = new Thickness(0, 2, 0, 2);
         }
 
         private void showProfileTab()
         {
             btnProfile.Visibility = Visibility.Visible;
-            btnProfile.Height = 25;
+            btnProfile.Height = 50;
             btnProfile.Margin = new Thickness(0, 2, 0, 2);
         }
-        
+
         private void showPersonnelTab()
         {
             btnPersonnel.Visibility = Visibility.Visible;
-            btnPersonnel.Height = 25;
+            btnPersonnel.Height = 50;
             btnPersonnel.Margin = new Thickness(0, 2, 0, 2);
         }
         /*
         private void showScheduleTab()
         {
             btnSchedule.Visibility = Visibility.Visible;
-            btnSchedule.Height = 25;
+            btnSchedule.Height = 50;
             btnSchedule.Margin = new Thickness(0, 2, 0, 2);
         }
         */
         private void showReservationTab()
         {
             btnReservation.Visibility = Visibility.Visible;
-            btnReservation.Height = 25;
+            btnReservation.Height = 50;
             btnReservation.Margin = new Thickness(0, 2, 0, 2);
             tabSetReservation.Visibility = Visibility.Visible;
             showReservationTabSet();
@@ -348,71 +348,70 @@ namespace WpfPresentationLayer
         private void BtnGenerateTrainSchedule_Click(object sender, RoutedEventArgs e)
         {
 
-            DateTime startDateTime = (DateTime)calTrainSchedule.SelectedDate;
-            if (0 < startDateTime.CompareTo(DateTime.Now))
-            {
-                int hours;
-                int mins;
-                if (!cboEnd.SelectedItem.Equals("12 am"))
-                {
-                    hours = cboStart.Items.IndexOf(cboEnd.SelectedItem) - cboStart.SelectedIndex;
-                }
-                else
-                {
-                    hours = (23 - cboStart.SelectedIndex);
-                }
-                mins = hours * 60;
+            DateTime startDateTime = DateTime.Parse(DateTime.Now.ToShortDateString());
+            int hours;
+            int mins;
+            // cboEnd adjusts based on the selected index of cboStart to get an accurate index
+            // finding the item selected in cboEnd in the list for for start.
+            hours = cboStart.Items.IndexOf(cboEnd.SelectedItem) - cboStart.SelectedIndex;
+            mins = hours * 60;
 
-                bool success = false;
-                TrainSchedule trainSchedule = new TrainSchedule();
+            bool success = false;
+            TrainSchedule trainSchedule = new TrainSchedule();
+            try
+            {
+                startDateTime = startDateTime.AddHours(cboStart.SelectedIndex + 1);
+                trainSchedule = _trainScheduleManager.GetNewTrainSchedule(_user.EmployeeID, startDateTime);
+
+                trainSchedule.TrainScheduleID = _trainScheduleManager.AddTrainSchedule(trainSchedule);
+
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Schedule not added " + ex.InnerException.Message);
+            }
+
+            if (success)
+            {
+                success = false;
                 try
                 {
-                    startDateTime = startDateTime.AddHours(cboStart.SelectedIndex + 1);
-                    trainSchedule = _trainScheduleManager.GetNewTrainSchedule(_user.EmployeeID, startDateTime);
-                    
-                    trainSchedule.TrainScheduleID = _trainScheduleManager.AddTrainSchedule(trainSchedule);
+                    List<TrainScheduleLine> lines = _trainScheduleManager.GenerateTrainSchedule(mins, trainSchedule.TrainScheduleID, startDateTime);
 
+                    foreach (TrainScheduleLine line in lines)
+                    {
+                        _trainScheduleManager.AddTrainScheduleLine(line);
+                    }
                     success = true;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Schedule not added " + ex.InnerException.Message);
+                    MessageBox.Show("Schedule not fully added " + ex.InnerException.Message);
                 }
-
                 if (success)
                 {
-                    success = false;
-                    try
-                    {
-                        List<TrainScheduleLine> lines = _trainScheduleManager.GenerateTrainSchedule(mins, trainSchedule.TrainScheduleID, startDateTime);
-
-                        foreach (TrainScheduleLine line in lines)
-                        {
-                            _trainScheduleManager.AddTrainScheduleLine(line);
-                        }
-                        success = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Schedule not fully added " + ex.InnerException.Message);
-                    }
-                    if (success)
-                    {
-                        dgTrainSchdule.ItemsSource = _trainScheduleManager.GetTrainScheduleLinesByTrainScheduleID(trainSchedule.TrainScheduleID);
-                        dgTrainSchdule.Visibility = Visibility.Visible;
-                        btnCloseTrainSchedule.Visibility = Visibility.Visible;
-                    }
+                    setDGTrainSchedule(trainSchedule.TrainScheduleID);
                 }
             }
-            else
-            {
-                MessageBox.Show("Please choose a date today or later.");
-            }
+        }
+
+        private void setDGTrainSchedule(int trainScheduleID)
+        {
+            List<TrainScheduleLineVM> lines = _trainScheduleManager.GetTrainScheduleLinesByTrainScheduleID(trainScheduleID);
+
+            var sortedLines = from l in lines
+                              orderby DateTime.Parse(l.ArrivalTime)
+                              select l;
+
+            dgTrainSchdule.ItemsSource = sortedLines;
+            dgTrainSchdule.Visibility = Visibility.Visible;
+            btnCloseTrainSchedule.Visibility = Visibility.Visible;
         }
 
         private void TabSeats_GotFocus(object sender, RoutedEventArgs e)
         {
-            if(dgSeats.ItemsSource == null)
+            if (dgSeats.ItemsSource == null)
             {
                 setDataGridSeats();
             }
@@ -472,7 +471,7 @@ namespace WpfPresentationLayer
             dgSeats.Columns.RemoveAt(3);
             foreach (var column in dgSeats.Columns)
             {
-                column.Width = 95;
+                column.Width = 230;
             }
         }
 
@@ -505,13 +504,19 @@ namespace WpfPresentationLayer
             dgTrainSchdule.Columns.RemoveAt(0);
             dgTrainSchdule.Columns.RemoveAt(2);
             dgTrainSchdule.Columns.RemoveAt(2);
+            dgTrainSchdule.Columns.RemoveAt(2);
             dgTrainSchdule.Columns.RemoveAt(3);
+            dgTrainSchdule.Columns[0].DisplayIndex = 2;
+            dgTrainSchdule.Columns[1].DisplayIndex = 1;
+            dgTrainSchdule.Columns[2].DisplayIndex = 0;
         }
 
         private void BtnCloseTrainSchedule_Click(object sender, RoutedEventArgs e)
         {
+            lblNewTrainSchedule.Content = "Create New Train Schedule";
             dgTrainSchdule.Visibility = Visibility.Hidden;
             btnCloseTrainSchedule.Visibility = Visibility.Hidden;
+            btnViewCurrentSchedule.Visibility = Visibility.Visible;
         }
 
         private void BtnRemoveSeat_Click(object sender, RoutedEventArgs e)
@@ -521,7 +526,7 @@ namespace WpfPresentationLayer
                 if (!dgSeats.SelectedItem.Equals(null))
                 {
                     SeatVM seat = (SeatVM)dgSeats.SelectedItem;
-                    MessageBoxResult result = MessageBox.Show("Remove seat " + seat.SeatID.ToString() + " from " + seat.TrainName,"Confirm Removal",MessageBoxButton.YesNo);
+                    MessageBoxResult result = MessageBox.Show("Remove seat " + seat.SeatID.ToString() + " from " + seat.TrainName, "Confirm Removal", MessageBoxButton.YesNo);
                     if (result == MessageBoxResult.Yes)
                     {
                         _seatManager.DeacivateSeat(new Seat()
@@ -547,7 +552,7 @@ namespace WpfPresentationLayer
             var editSeatType = new frmEditSeatType(_seatManager);
             editSeatType.ShowDialog();
             setDataGridSeats();
-            
+
         }
 
         private void DgRoute_AutoGeneratedColumns(object sender, EventArgs e)
@@ -639,24 +644,15 @@ namespace WpfPresentationLayer
             if (!dgTrain.SelectedIndex.Equals(-1))
             {
                 Train train = (Train)dgTrain.SelectedItem;
-                var editTrain = new frmEditTrain(_trainManager,train);
+                var editTrain = new frmEditTrain(_trainManager, train);
                 editTrain.ShowDialog();
             }
             fillDgTrain();
         }
 
-        private void TabProfile_GotFocus(object sender, RoutedEventArgs e)
-        {
-            tabSetProfile.Visibility = Visibility.Visible;
-            txtProfileEmail.Text = _user.Email;
-            txtProfileFirstName.Text = _user.FirstName;
-            txtProfileLastName.Text = _user.LastName;
-            txtProfilePhoneNumber.Text = _user.PhoneNumber;
-        }
-
         private void BtnProfileEdit_Click(object sender, RoutedEventArgs e)
         {
-            if(btnProfileEdit.Content.Equals("Edit Profile"))
+            if (btnProfileEdit.Content.Equals("Edit Profile"))
             {
                 btnProfileEdit.Content = "Save";
                 txtProfileFirstName.IsEnabled = true;
@@ -666,10 +662,15 @@ namespace WpfPresentationLayer
             }
             else
             {
-                if (_userManager.Validate(txtProfileEmail.Text)&&_userManager.Validate(txtProfileFirstName.Text)
-                    && _userManager.Validate(txtProfileLastName.Text) && _userManager.Validate(txtProfilePhoneNumber.Text)
-                    && txtProfilePhoneNumber.Text.Length.Equals(11) && txtProfileEmail.Text.Length > 7 && txtProfileEmail.Text.Contains('@') &&
-                    (txtProfileEmail.Text.EndsWith(".com") || txtProfileEmail.Text.EndsWith(".org") || txtProfileEmail.Text.EndsWith(".edu") || txtProfileEmail.Text.EndsWith(".gov")))
+                string phoneNumber = PhoneNumberManager.PhoneNumberFixer(txtProfilePhoneNumber.Text);
+
+                if (_userManager.Validate(txtProfileEmail.Text) 
+                    && _userManager.Validate(txtProfileFirstName.Text)
+                    && _userManager.Validate(txtProfileLastName.Text) 
+                    && PhoneNumberManager.IsGoodLengthAfterFix(phoneNumber)
+                    && txtProfileEmail.Text.Length > 7 && txtProfileEmail.Text.Contains('@')
+                    && (txtProfileEmail.Text.EndsWith(".com") || txtProfileEmail.Text.EndsWith(".org") 
+                    || txtProfileEmail.Text.EndsWith(".edu") || txtProfileEmail.Text.EndsWith(".gov")))
                 {
                     _userManager.UpdateUser(_user, new User()
                     {
@@ -677,7 +678,7 @@ namespace WpfPresentationLayer
                         Email = txtProfileEmail.Text,
                         FirstName = txtProfileFirstName.Text,
                         LastName = txtLastName.Text,
-                        PhoneNumber = txtProfilePhoneNumber.Text,
+                        PhoneNumber = phoneNumber,
                         Active = _user.Active,
                         Roles = _user.Roles,
                         PasswordHash = _user.PasswordHash
@@ -701,6 +702,12 @@ namespace WpfPresentationLayer
             hideInnerTabs();
             showProfileTab();
             tabSetProfile.Visibility = Visibility.Visible;
+            tabSetProfile.Visibility = Visibility.Visible;
+            txtProfileEmail.Text = _user.Email;
+            txtProfileFirstName.Text = _user.FirstName;
+            txtProfileLastName.Text = _user.LastName;
+            txtProfilePhoneNumber.Text = 
+                PhoneNumberManager.FormatPhoneNumberForOutput(_user.PhoneNumber);
         }
 
         private void CboStartStation_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -723,10 +730,17 @@ namespace WpfPresentationLayer
 
         private void BtnAddUser_Click(object sender, RoutedEventArgs e)
         {
-            if (_userManager.Validate(txtAddUserEmail.Text) && _userManager.Validate(txtAddUserFirstName.Text)
-                    && _userManager.Validate(txtAddUserLastName.Text) && _userManager.Validate(txtAddUserPhoneNumber.Text)
-                    && txtAddUserPhoneNumber.Text.Length.Equals(11) && txtAddUserEmail.Text.Length > 7 && txtAddUserEmail.Text.Contains('@') &&
-                    (txtAddUserEmail.Text.EndsWith(".com") || txtAddUserEmail.Text.EndsWith(".org") || txtAddUserEmail.Text.EndsWith(".edu") || txtAddUserEmail.Text.EndsWith(".gov")))
+            string phoneNumber = 
+                PhoneNumberManager.PhoneNumberFixer(txtAddUserPhoneNumber.Text);
+            if (_userManager.Validate(txtAddUserEmail.Text) 
+                && _userManager.Validate(txtAddUserFirstName.Text)
+                    && _userManager.Validate(txtAddUserLastName.Text)
+                    && PhoneNumberManager.IsGoodLengthAfterFix(phoneNumber)
+                    && txtAddUserEmail.Text.Length > 7 && txtAddUserEmail.Text.Contains('@')
+                    && (txtAddUserEmail.Text.EndsWith(".com")
+                    || txtAddUserEmail.Text.EndsWith(".org") 
+                    || txtAddUserEmail.Text.EndsWith(".edu") 
+                    || txtAddUserEmail.Text.EndsWith(".gov")))
             {
                 try
                 {
@@ -748,7 +762,7 @@ namespace WpfPresentationLayer
                 catch (Exception ex)
                 {
 
-                    MessageBox.Show("Failed to add user"+ex.InnerException);
+                    MessageBox.Show("Failed to add user" + ex.InnerException);
                 }
 
             }
@@ -762,7 +776,7 @@ namespace WpfPresentationLayer
 
         private void TabUserList_GotFocus(object sender, RoutedEventArgs e)
         {
-            if(dgUsers.ItemsSource == null)
+            if (dgUsers.ItemsSource == null)
             {
                 fillDgUsers();
             }
@@ -777,8 +791,13 @@ namespace WpfPresentationLayer
             catch (Exception ex)
             {
 
-                MessageBox.Show("List not found. "+ex.InnerException);
+                MessageBox.Show("List not found. " + ex.InnerException);
             }
+
+
+            dgUsers.Columns.RemoveAt(5);
+            dgUsers.Columns.RemoveAt(5);
+            dgUsers.Columns.RemoveAt(5);
         }
 
 
@@ -812,6 +831,16 @@ namespace WpfPresentationLayer
         private void DgSeats_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             editSeat();
+        }
+
+        private void btnViewCurrentSchedule_Click(object sender, RoutedEventArgs e)
+        {
+            btnViewCurrentSchedule.Visibility = Visibility.Hidden;
+            btnCloseTrainSchedule.Visibility = Visibility.Visible;
+            lblNewTrainSchedule.Content = "Current Schedule";
+            int trainScheduleID = _trainScheduleManager.GetTrainSchedule().TrainScheduleID;
+            setDGTrainSchedule(trainScheduleID);
+
         }
     }
 }

@@ -35,6 +35,6 @@ namespace MVCPresentationLayer.Models
             return new ApplicationDbContext();
         }
 
-        
+
     }
 }

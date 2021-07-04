@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using DataObject;
 using LogicLayer;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -19,9 +21,12 @@ namespace MVCPresentationLayer.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private ICustomerManager _customerManager;
+        private IUserManager _usrManager;
 
         public AccountController()
         {
+            _customerManager = new CustomerManager();
+            _usrManager = new UserManager();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -482,40 +487,48 @@ namespace MVCPresentationLayer.Controllers
 
 
         // GET: /Account/RegisterEmployeeUser
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize]
         public ActionResult RegisterEmployeeUser()
         {
-            ViewBag.Title = "Add or Register a New Employee";
-            return View();
+            if (_usrManager.FindUser(User.Identity.Name))
+            {
+                User user = _usrManager.GetUserByEmail(User.Identity.Name);
+                List<string> roles = _usrManager.RetrieveEmployeeRoles(user.EmployeeID);
+                if (roles.Contains("Administrator"))
+                {
+                    ViewBag.Title = "Add or Register a New Employee";
+                    return View();
+                }
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         // POST: /Account/RegisterEmployeeUser
+        [Authorize]
         [HttpPost]
-        [Authorize(Roles = "Administrator, Manager")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> RegisterEmployeeUser(RegisterEmployeeViewModel model)
         {
             if (ModelState.IsValid)
             {
-                LogicLayer.UserManager userMgr = new LogicLayer.UserManager();
                 try
                 {
-                    if (userMgr.FindUser(model.Email))
+                    if (_usrManager.FindUser(model.Email))
                     {
                         return RedirectToAction("Register", "Account");
                     }
                     else
                     {
-                        var employee = new DataObject.User()
+                        var employee = new User()
                         {
                             Email = model.Email,
                             FirstName = model.GivenName,
                             LastName = model.FamilyName,
                             PhoneNumber = model.PhoneNumber
                         };
-                        if (userMgr.AddUser(employee))
+                        if (_usrManager.AddUser(employee))
                         {
-                            var employeeID = userMgr.RetrieveUserIDFromEmail(model.Email);
+                            var employeeID = _usrManager.RetrieveUserIDFromEmail(model.Email);
                             var user = new ApplicationUser
                             {
                                 EmployeeID = employeeID,

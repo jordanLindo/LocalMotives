@@ -262,7 +262,6 @@
     <Content Include="Views\TrainSchedule\StationScheduleDetails.cshtml" />
     <Content Include="Views\TrainSchedule\TrainDetails.cshtml" />
     <Content Include="Views\TrainManagement\Index.cshtml" />
-    <Content Include="Views\TrainManagement\Create.cshtml" />
     <Content Include="Views\Admin\Details.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Account\RegisterEmployeeUser.cshtml" />
@@ -271,9 +270,12 @@
     <Content Include="Views\TrainManagement\TrainCarsList.cshtml" />
     <Content Include="Views\TrainManagement\TrainCarDetails.cshtml" />
     <Content Include="Views\TrainManagement\DeleteTrainCar.cshtml" />
+    <Content Include="Views\TrainSchedule\CreateNewTrainSchedule.cshtml" />
+    <Content Include="Views\Manage\EditPhoneNumber.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Timer\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

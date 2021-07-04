@@ -42,6 +42,24 @@ namespace LogicLayer
             return result;
         }
 
+        public User GetUserByEmail(string email)
+        {
+
+            User result = null;
+
+            try
+            {
+                result = _userAccessor.GetUserByEmail(email);
+            }
+            catch (Exception ex)
+            {
+
+                throw new ApplicationException("Failed to get user.", ex);
+            }
+
+            return result;
+        }
+
         private string hashPassword(string source)
         {
             string result = null;
@@ -255,6 +273,19 @@ namespace LogicLayer
             {
 
                 throw new ApplicationException("Database Error", ex);
+            }
+        }
+
+        public int CountAdmin()
+        {
+            try
+            {
+                return _userAccessor.CountAdmin();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
             }
         }
     }

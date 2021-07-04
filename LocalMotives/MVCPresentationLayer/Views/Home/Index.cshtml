@@ -4,7 +4,20 @@
 
 <div class="row">
     <div class="col-lg-4">
-        <h2>Train Schedule</h2>
         <p><a href="\TrainSchedule">Train Schedule</a></p>
+        @{
+            if (User.Identity.Name != "" && ViewBag.Roles.Count > 0)
+            {
+                if (ViewBag.Roles.Contains("Administrator"))
+                {
+                    <p><a href="~/Admin">Personnel Management</a></p>
+                }
+                if (ViewBag.Roles.Contains("Manager"))
+                {
+                    <p><a href="~/TrainManagement">Train Management</a></p>
+                }
+            }
+
+        }
     </div>
 </div>

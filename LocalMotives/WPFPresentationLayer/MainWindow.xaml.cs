@@ -25,6 +25,12 @@ namespace WpfPresentationLayer
         private User _user = null;
         private IUserManager _userManager;
 
+        [STAThread]
+        static void Main(string[] args)
+        {
+            var login = new MainWindow();
+            login.ShowDialog();
+        }
         public MainWindow()
         {
             InitializeComponent();

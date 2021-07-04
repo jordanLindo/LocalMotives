@@ -1,33 +1,35 @@
 ﻿@model IEnumerable<DataObject.TrainScheduleLineVM>
 
-
-<h2>@ViewBag.Title</h2>
+<table>
+    <tr>
+        <th>
+            <h2>@ViewBag.Title</h2>
+        </th>
+        @{
+            if (ViewBag.Roles != null && ViewBag.Roles.Contains("Manager"))
+            {
+                <th style="width:60px;"></th>
+                <th>
+                    @Html.ActionLink("Create New Train Schedule", "CreateNewTrainSchedule")
+                </th>
+            }
+        }
+    </tr>
+</table>
 
 <table class="table">
     <tr>
         <th>
-            Route Line Id
+            Route Number
         </th>
         <th>
             Arrival Time
-        </th>
-        <th>
-            Train Schedule ID
-        </th>
-        <th>
-            Route ID
-        </th>
-        <th>
-            Starting Station ID
         </th>
         <th>
             Station Name
         </th>
         <th>
             Train Name
-        </th>
-        <th>
-            Train ID
         </th>
         <th></th>
     </tr>
@@ -36,33 +38,20 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.RouteLineID)
+                @item.RouteID
             </td>
             <td>
-                @item.ArrivalTime.ToShortTimeString()
+                @item.ArrivalTime
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TrainScheduleID)
+                @Html.ActionLink(item.StationName, "StationDetails", "TrainSchedule", new { id = item.StationStartID }, null)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RouteID)
+                @Html.ActionLink(item.TrainName, "TrainDetails", "TrainSchedule", new { id = item.TrainID, name = item.TrainName, route = item.RouteID }, null)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StationStartID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StationName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TrainName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TrainID)
-            </td>
-            <td>
-                @Html.ActionLink("Edit Train", "TrainEdit", new { id = item.TrainID })|
+                @Html.ActionLink("Edit Train", "TrainEdit", new { id = item.TrainID }) |
                 @Html.ActionLink("Edit Station", "StationEdit", new { stationID = item.StationStartID })
-
             </td>
         </tr>
     }

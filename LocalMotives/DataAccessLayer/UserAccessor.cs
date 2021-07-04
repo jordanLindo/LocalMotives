@@ -392,6 +392,29 @@ namespace DataAccessLayer
             return rows;
         }
 
+        public int CountAdmin()
+        {
+            int count = 0;
+            var conn = DBConnection.GetConnection();
+            var cmd = new SqlCommand("sp_count_admin", conn);
+            try
+            {
+                conn.Open();
+                count = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return count;
+
+        }
+
         public int DeleteEmployeeRole(int employeeID, string role)
         {
             int rows = 0;

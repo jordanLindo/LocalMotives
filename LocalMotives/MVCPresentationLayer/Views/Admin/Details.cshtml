@@ -1,10 +1,8 @@
 ﻿@model MVCPresentationLayer.Models.ApplicationUser
 
-@{
-    ViewBag.Title = "Details";
-}
 
-<h2>Details</h2>
+
+<h2>@ViewBag.Title</h2>
 
 <div>
     <h4>ApplicationUser</h4>
@@ -42,68 +40,40 @@
             @Html.DisplayFor(model => model.Email)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.EmailConfirmed)
-        </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.EmailConfirmed)
+            @Html.HiddenFor(model => model.EmailConfirmed)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
+            Phone Number
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.PhoneNumber)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-        </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.PhoneNumberConfirmed)
+            @Html.HiddenFor(model => model.PhoneNumberConfirmed)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TwoFactorEnabled)
-        </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.TwoFactorEnabled)
+            @Html.HiddenFor(model => model.TwoFactorEnabled)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LockoutEndDateUtc)
-        </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.LockoutEndDateUtc)
+            @Html.HiddenFor(model => model.LockoutEndDateUtc)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LockoutEnabled)
-        </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.LockoutEnabled)
+            @Html.HiddenFor(model => model.LockoutEnabled)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AccessFailedCount)
-        </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.AccessFailedCount)
+            @Html.HiddenFor(model => model.AccessFailedCount)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.UserName)
+            @Html.HiddenFor(model => model.UserName)
         </dd>
 
         <dt>
@@ -117,7 +87,7 @@
                     <li>
                         <strong>
                             @r @Html.ActionLink("Remove Role", "RemoveRole",
-                           new { Id = Model.Id, Role = r })
+                           new { Email = ViewBag.User.Email, Role = r })
                         </strong>
                         @if(r == "Administrator")
                         {
@@ -138,7 +108,7 @@
                     <li>
                         <strong>
                             @r @Html.ActionLink("Add Role", "AddRole",
-                           new { Id = Model.Id, Role = r })
+                           new { Email = ViewBag.User.Email, Role = r })
                         </strong>
                     </li>
                 }

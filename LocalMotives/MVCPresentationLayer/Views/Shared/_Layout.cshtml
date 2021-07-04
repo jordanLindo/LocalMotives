@@ -28,14 +28,6 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Train Schedule", "Index", "TrainSchedule")</li>
-                    @if (User.IsInRole("Administrator"))
-                    {
-                        <li>@Html.ActionLink("User Administration", "Index", "Admin")</li>
-                    }
-                    @if (User.IsInRole("Manager"))
-                    {
-                        <li>@Html.ActionLink("Train Management", "Index", "TrainManagement")</li>
-                    }
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")

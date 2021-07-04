@@ -165,7 +165,7 @@ namespace DataAccessLayer
                         lines.Add(new TrainScheduleLineVM()
                         {
                             TrainScheduleLineID = reader.GetInt32(0),
-                            ArrivalTime = reader.GetDateTime(1),
+                            ArrivalTime = reader.GetDateTime(1).ToShortTimeString(),
                             TrainScheduleID = reader.GetInt32(2),
                             RouteID = reader.GetInt32(3),
                             StationStartID = reader.GetInt32(4),
@@ -208,7 +208,7 @@ namespace DataAccessLayer
                         lines.Add(new TrainScheduleLineVM()
                         {
                             TrainScheduleLineID = reader.GetInt32(0),
-                            ArrivalTime = reader.GetDateTime(1),
+                            ArrivalTime = reader.GetDateTime(1).ToShortTimeString(),
                             RouteLineID = reader.GetInt32(2),
                             RouteID = reader.GetInt32(3),
                             TrainScheduleID = reader.GetInt32(4),
@@ -253,7 +253,7 @@ namespace DataAccessLayer
                         lines.Add(new TrainScheduleLineVM()
                         {
                             TrainScheduleLineID = reader.GetInt32(0),
-                            ArrivalTime = reader.GetDateTime(1),
+                            ArrivalTime = reader.GetDateTime(1).ToShortTimeString(),
                             RouteLineID = reader.GetInt32(2),
                             RouteID = reader.GetInt32(3),
                             StationStartID = reader.GetInt32(4),

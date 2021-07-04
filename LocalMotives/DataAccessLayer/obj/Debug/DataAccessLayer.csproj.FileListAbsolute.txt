@@ -7,3 +7,12 @@ E:\DotNet3\FinalProject\LocalMotives\DataAccessLayer\obj\Debug\DataAccessLayer.c
 E:\DotNet3\FinalProject\LocalMotives\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.CopyComplete
 E:\DotNet3\FinalProject\LocalMotives\DataAccessLayer\obj\Debug\DataAccessLayer.dll
 E:\DotNet3\FinalProject\LocalMotives\DataAccessLayer\obj\Debug\DataAccessLayer.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessLayer\bin\Debug\DataAccessLayer.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessLayer\bin\Debug\DataAccessLayer.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessLayer\bin\Debug\DataObject.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessLayer\bin\Debug\DataObject.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessLayer\obj\Debug\DataAccessLayer.csprojAssemblyReference.cache
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.CoreCompileInputs.cache
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.CopyComplete
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessLayer\obj\Debug\DataAccessLayer.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessLayer\obj\Debug\DataAccessLayer.pdb

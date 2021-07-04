@@ -1,9 +1,6 @@
 ﻿@model MVCPresentationLayer.Models.IndexViewModel
-@{
-    ViewBag.Title = "Manage";
-}
 
-<h2>@ViewBag.Title.</h2>
+<h2>@ViewBag.Title</h2>
 
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div>
@@ -19,9 +16,39 @@
             }
             else
             {
-                @Html.ActionLink("Create", "SetPassword")
+                @Html.ActionLink("Create password", "SetPassword")
             }
             ]
         </dd>
+    </dl>
+    <dl class="dl-horizontal">
+
+        @{
+            string userEmail = ViewBag.User.Email;
+            if (Model.PhoneNumber != null && Model.PhoneNumber != "")
+            {
+                <dt>Phone Number:</dt>
+                <dd>
+                    <table>
+                        <tr>
+                            <td>
+                                
+                                
+                                @Model.PhoneNumber
+                            </td>
+                            <td style="width:30px;"></td>
+                            <td>
+                                @Html.ActionLink("Edit number", "EditPhoneNumber",
+                               new { email = userEmail })
+                            </td>
+                        </tr>
+                    </table>
+                </dd>
+            }
+            else
+            {
+                @Html.ActionLink("Add Phone Number", "AddPhoneNumber")
+            }
+        }
     </dl>
 </div>

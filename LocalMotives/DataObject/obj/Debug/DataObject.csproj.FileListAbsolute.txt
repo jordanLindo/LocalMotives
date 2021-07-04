@@ -4,3 +4,9 @@ E:\DotNet3\FinalProject\LocalMotives\DataObject\obj\Debug\DataObject.csprojAssem
 E:\DotNet3\FinalProject\LocalMotives\DataObject\obj\Debug\DataObject.csproj.CoreCompileInputs.cache
 E:\DotNet3\FinalProject\LocalMotives\DataObject\obj\Debug\DataObject.dll
 E:\DotNet3\FinalProject\LocalMotives\DataObject\obj\Debug\DataObject.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataObject\bin\Debug\DataObject.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataObject\bin\Debug\DataObject.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataObject\obj\Debug\DataObject.csprojAssemblyReference.cache
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataObject\obj\Debug\DataObject.csproj.CoreCompileInputs.cache
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataObject\obj\Debug\DataObject.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataObject\obj\Debug\DataObject.pdb

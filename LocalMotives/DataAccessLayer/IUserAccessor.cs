@@ -30,5 +30,7 @@ namespace DataAccessLayer
         int DeleteEmployeeRole(int employeeID, string role);
 
         User GetUserByEmail(string email);
+
+        int CountAdmin();
     }
 }

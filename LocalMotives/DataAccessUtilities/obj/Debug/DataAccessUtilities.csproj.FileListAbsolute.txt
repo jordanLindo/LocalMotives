@@ -3,3 +3,9 @@ E:\DotNet3\FinalProject\LocalMotives\DataAccessUtilities\bin\Debug\DataAccessUti
 E:\DotNet3\FinalProject\LocalMotives\DataAccessUtilities\obj\Debug\DataAccessUtilities.csproj.CoreCompileInputs.cache
 E:\DotNet3\FinalProject\LocalMotives\DataAccessUtilities\obj\Debug\DataAccessUtilities.dll
 E:\DotNet3\FinalProject\LocalMotives\DataAccessUtilities\obj\Debug\DataAccessUtilities.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessUtilities\bin\Debug\DataAccessUtilities.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessUtilities\bin\Debug\DataAccessUtilities.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessUtilities\obj\Debug\DataAccessUtilities.csprojAssemblyReference.cache
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessUtilities\obj\Debug\DataAccessUtilities.csproj.CoreCompileInputs.cache
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessUtilities\obj\Debug\DataAccessUtilities.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\DataAccessUtilities\obj\Debug\DataAccessUtilities.pdb

@@ -6,28 +6,57 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using DataObject;
+using LogicLayer;
+using LogicLayerUtilities;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using MVCPresentationLayer.Models;
 
 namespace MVCPresentationLayer.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    
     public class AdminController : Controller
     {
-        
+
         private ApplicationUserManager userManager;
+        private IUserManager _userManager;
+
+        public AdminController()
+        {
+            _userManager = new UserManager();
+        }
 
         // GET: Admin
+        [Authorize]
         public ActionResult Index()
         {
-            userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            return View(userManager.Users.OrderBy(n => n.FamilyName).ToList());
+            if (_userManager.FindUser(User.Identity.Name))
+            {
+                List<string> roles = _userManager.RetrieveEmployeeRoles(_userManager.RetrieveUserIDFromEmail(User.Identity.Name));
+                if (roles.Contains("Administrator"))
+                {
+                    userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                    return View(userManager.Users.OrderBy(n => n.FamilyName).ToList());
+                }
+                else
+                {
+                    return Redirect("~/");
+                }
+            }
+            else
+            {
+                return Redirect("~/");
+            }
+
         }
 
         // GET: Admin/Details/5
+        [Authorize]
         public ActionResult Details(string id)
         {
+            ViewBag.Title = "Details";
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -38,72 +67,88 @@ namespace MVCPresentationLayer.Controllers
             {
                 return HttpNotFound();
             }
-            var userMgr = new LogicLayer.UserManager();
-            var allRoles = userMgr.RetrieveAllEmployeeRoles();
 
-            var roles = userManager.GetRoles(id);
-            var noRoles = allRoles.Except(roles);
+            if (_userManager.FindUser(User.Identity.Name))
+            {
+                var allRoles = _userManager.RetrieveAllEmployeeRoles();
 
-            ViewBag.Roles = roles;
-            ViewBag.NoRoles = noRoles;
+                var roles = _userManager.RetrieveEmployeeRoles(_userManager.RetrieveUserIDFromEmail(User.Identity.Name));
+                var noRoles = allRoles.Except(roles);
 
-            return View(applicationUser);
+                ViewBag.Roles = roles;
+                ViewBag.NoRoles = noRoles;
+                User user = _userManager.GetUserByEmail(User.Identity.Name);
+                user.PhoneNumber = PhoneNumberManager.PhoneNumberFixer(user.PhoneNumber);
+                user.PhoneNumber = PhoneNumberManager.FormatPhoneNumberForOutput(user.PhoneNumber);
+                ViewBag.User = user;
+                applicationUser.PhoneNumber = user.PhoneNumber;
+
+
+
+
+                return View(applicationUser);
+            }
+            else
+            {
+                return Redirect("~/");
+            }
+
+
+
         }
 
-        public ActionResult RemoveRole(string id, string role)
+        [Authorize]
+        public ActionResult RemoveRole(string email, string role)
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var user = userManager.Users.First(u => u.Id == id);
+            var user = _userManager.GetUserByEmail(email);
 
-            if(role == "Administrator")
+            if (role == "Administrator")
             {
-                var adminUsers = userManager.Users.ToList()
-                    .Where(u => userManager.IsInRole(u.Id, "Administrator"))
-                    .ToList().Count();
-                if(adminUsers < 2)
+                int adminUsers = _userManager.CountAdmin();
+                if (adminUsers < 2)
                 {
                     ViewBag.Error = "Cannot remove last administrator.";
-                    return RedirectToAction("Details", "Admin", new { id = user.Id });
+                    return RedirectToAction("Details", "Admin", new { id = userManager.FindByEmail(email).Id });
                 }
             }
-            userManager.RemoveFromRole(id, role);
+            //userManager.RemoveFromRole(id, role);
 
-            if(user.EmployeeID != null)
+            if (_userManager.FindUser(user.Email))
             {
                 try
                 {
-                    var userMgr = new LogicLayer.UserManager();
-                    userMgr.DeleteUserRole((int)user.EmployeeID, role);
+                    _userManager.DeleteUserRole(user.EmployeeID, role);
                 }
                 catch (Exception)
                 {
                     // do nothing
                 }
             }
-            return RedirectToAction("Details", "Admin", new { id = user.Id });
+            return RedirectToAction("Details", "Admin", new { id = userManager.FindByEmail(email).Id });
         }
 
-        public ActionResult AddRole(string id, string role)
+        [Authorize]
+        public ActionResult AddRole(string email, string role)
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var user = userManager.Users.First(u => u.Id == id);
+            var user = _userManager.GetUserByEmail(email);
 
 
-            userManager.AddToRole(id, role);
+            //userManager.AddToRole(id, role);
 
-            if(user.EmployeeID != null)
+            if (_userManager.FindUser(email))
             {
                 try
                 {
-                    var userMgr = new LogicLayer.UserManager();
-                    userMgr.InsertUserRole((int)user.EmployeeID, role);
+                    _userManager.InsertUserRole(user.EmployeeID, role);
                 }
                 catch (Exception)
                 {
                     // do nothing
                 }
             }
-            return RedirectToAction("Details", "Admin", new { id = user.Id });
+            return RedirectToAction("Details", "Admin", new { id = userManager.FindByEmail(email).Id });
         }
     }
 }

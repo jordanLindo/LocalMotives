@@ -212,7 +212,7 @@ CREATE TABLE [dbo].[Employee]
 	,[FirstName]		[nvarchar](150)									NOT NULL
 	,[LastName]			[nvarchar](150)									NOT NULL
 	,[Email]			[nvarchar](250)									NOT NULL
-	,[PhoneNumber]		[nvarchar](11)									NOT NULL
+	,[PhoneNumber]		[nvarchar](12)									NOT NULL
 	,[Active]			[bit]											NOT NULL
 		DEFAULT 1
 	,[PasswordHash]		[nvarchar](100)									NOT NULL
@@ -227,10 +227,11 @@ GO
 INSERT INTO [dbo].[Employee]
 	([FirstName],[LastName],[Email],[PhoneNumber])
 	VALUES
-	 ('System','Admin','admin@company.com','00000000000')
+	 ('System','Admin','admin@work.com','00000000000')
 	,('Alvin','Albertson','aal@work.com','13132423535')
 	,('Olivia','Olafsen','olive@work.com','12132423535')
 	,('Norman','Bates','nbates@work.com','12111123535')
+	,('Second','Admin','2admin@work.com','0000000001')
 GO
 
 print '' print '*** Creating Reservation table'
@@ -619,6 +620,7 @@ INSERT INTO [dbo].[EmployeeRole]
 	,(1000001,'Clerk')
 	,(1000002,'Conductor')
 	,(1000003,'Manager')
+	,(1000004, 'Administrator')
 	
 GO
 
@@ -1466,6 +1468,9 @@ CREATE PROCEDURE [sp_insert_trainschedule]
 )
 AS
 BEGIN
+	UPDATE [dbo].[TrainSchedule]
+	SET [Active] = 0
+	WHERE [Active] = 1
 	INSERT INTO [dbo].[TrainSchedule]
 	([CreationDate],[EmployeeID],[StartDate])
 	VALUES
@@ -1823,6 +1828,6 @@ AS
 BEGIN
 	SELECT COUNT([EmployeeID])
 	FROM [dbo].[EmployeeRole]
-	WHERE [RoleID] = "Admin"
+	WHERE [RoleID] = "Administrator"
 END
 GO

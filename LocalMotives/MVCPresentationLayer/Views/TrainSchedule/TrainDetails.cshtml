@@ -54,3 +54,11 @@
 <p>
     @Html.ActionLink("Back to List", "Index")
 </p>
+@{
+    if (ViewBag.User.Roles.Contains("Manager"))
+    {
+        <p>
+            @Html.ActionLink("Go to manager List", "Index", "TrainManagement")
+        </p>
+    }
+}

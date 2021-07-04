@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DataAccessLayer;
 using DataObject;
+using LogicLayerUtilities;
 
 namespace LogicLayer
 {
@@ -115,7 +116,7 @@ namespace LogicLayer
             return trainSchedule;
         }
 
-        public List<TrainScheduleLine> GenerateTrainSchedule(int minutes,int trainScheduleID,DateTime startDateTime)
+        public List<TrainScheduleLine> GenerateTrainSchedule(int minutes, int trainScheduleID, DateTime startDateTime)
         {
             List<TrainScheduleLine> lines = new List<TrainScheduleLine>();
 
@@ -129,6 +130,7 @@ namespace LogicLayer
             foreach (Route route in routes)
             {
                 routeLines = _routeAccessor.SelectRouteLineByRouteID(route.RouteID);
+                int routeMinutes = minutes;
 
                 DateTime time = startDateTime;
 
@@ -139,16 +141,16 @@ namespace LogicLayer
                         lines.Add(new TrainScheduleLine()
                         {
                             RouteLineID = routeLines.ElementAt(i).RouteLineID,
-                            ArrivalTime = time,
+                            ArrivalTime = time.ToShortTimeString(),
                             TrainScheduleID = trainScheduleID
                         });
 
                         time = time.AddMinutes(routeLines.ElementAt(i).TimeToNext);
                     }
 
-                    minutes -= route.TotalTimeMin;
+                    routeMinutes -= route.TotalTimeMin;
 
-                } while (minutes > route.TotalTimeMin);
+                } while (routeMinutes > route.TotalTimeMin);
             }
             return lines;
         }

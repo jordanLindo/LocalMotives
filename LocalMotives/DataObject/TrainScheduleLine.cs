@@ -10,7 +10,9 @@ namespace DataObject
     {
         public int TrainScheduleLineID { get; set; }
         public int RouteLineID { get; set; }
-        public DateTime ArrivalTime { get; set; }
+        public string ArrivalTime { get; set; }
         public int TrainScheduleID { get; set; }
+
+
     }
 }

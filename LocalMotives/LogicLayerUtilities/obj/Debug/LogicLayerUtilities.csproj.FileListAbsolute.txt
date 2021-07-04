@@ -7,3 +7,14 @@ E:\DotNet3\FinalProject\LocalMotives\LogicLayerUtilities\obj\Debug\LogicLayerUti
 E:\DotNet3\FinalProject\LocalMotives\LogicLayerUtilities\obj\Debug\LogicLayerUtilities.csproj.CopyComplete
 E:\DotNet3\FinalProject\LocalMotives\LogicLayerUtilities\obj\Debug\LogicLayerUtilities.dll
 E:\DotNet3\FinalProject\LocalMotives\LogicLayerUtilities\obj\Debug\LogicLayerUtilities.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\bin\Debug\LogicLayerUtilities.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\bin\Debug\LogicLayerUtilities.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\bin\Debug\DataAccessUtilities.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\bin\Debug\DataObject.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\bin\Debug\DataAccessUtilities.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\bin\Debug\DataObject.pdb
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\obj\Debug\LogicLayerUtilities.csprojAssemblyReference.cache
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\obj\Debug\LogicLayerUtilities.csproj.CoreCompileInputs.cache
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\obj\Debug\LogicLayerUtilities.csproj.CopyComplete
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\obj\Debug\LogicLayerUtilities.dll
+E:\DotNet3\FinalProjectReadmeUpdate\LocalMotives\LogicLayerUtilities\obj\Debug\LogicLayerUtilities.pdb

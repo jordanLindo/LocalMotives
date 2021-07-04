@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 namespace MVCPresentationLayer.Controllers
 {
-    [Authorize(Roles = "Manager")]
+
 
     public class TrainManagementController : Controller
     {
@@ -20,6 +20,7 @@ namespace MVCPresentationLayer.Controllers
         private IStationManager _stationManager;
         private ITrainManager _trainManager;
         private ISeatManager _seatManager;
+        private IUserManager _userManager;
 
         public TrainManagementController()
         {
@@ -27,168 +28,192 @@ namespace MVCPresentationLayer.Controllers
             _stationManager = new StationManager();
             _trainManager = new TrainManager();
             _seatManager = new SeatManager();
+            _userManager = new UserManager();
         }
 
         // GET: TrainManagement
+        [Authorize]
         public ActionResult Index()
         {
-            ViewBag.Title = "Schedule Admin";
-            var schedule = _trainScheduleManager.GetTrainScheduleLinesByTrainScheduleID(
-                _trainScheduleManager.GetTrainSchedule().TrainScheduleID);
-
-            return View(schedule);
-        }
-
-        // GET: TrainManagement/Create
-        public ActionResult Create()
-        {
-            ViewBag.Title = "Generate New Schedule";
-            ViewBag.Today = DateTime.Now.ToShortDateString();
-            ViewBag.Hours = ListManager.GetTimes();
-            return View();
-        }
-
-
-        // POST: TrainManagement/Create
-        [HttpPost]
-        public ActionResult Create(TrainSchedule schedule)
-        {
-            DateTime startTime = DateTime.Parse(schedule.StartTime);
-            DateTime endTime = DateTime.Parse(schedule.EndTime);
-            
-            if (ModelState.IsValid && endTime.CompareTo(startTime) > 0)
+            User user = _userManager.GetUserByEmail(User.Identity.Name);
+            if (user.Roles.Contains("Manager"))
             {
-                try
-                {
-                    var userID = User.Identity.GetUserId();
-                    var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                    var user = userManager.Users.First(u => u.Id == userID);
-                    int employeeID = (int)user.EmployeeID;
-                    TrainSchedule newSchedule = 
-                        _trainScheduleManager.GetNewTrainSchedule(employeeID, schedule.StartDate);
-                    newSchedule.TrainScheduleID = _trainScheduleManager.AddTrainSchedule(newSchedule);
-                    int mins = (int)endTime.Subtract(startTime).TotalMinutes;
-                    List<TrainScheduleLine> lines = _trainScheduleManager.GenerateTrainSchedule(mins, newSchedule.TrainScheduleID, startTime);
-                    foreach (TrainScheduleLine line in lines)
-                    {
-                        _trainScheduleManager.AddTrainScheduleLine(line);
-                    }
-                    return RedirectToAction("Index");
-                }
-                catch
-                {
-                    return View();
-                }
+                ViewBag.Title = "Schedule Management";
+                var schedule = _trainScheduleManager.GetTrainScheduleLinesByTrainScheduleID(
+                    _trainScheduleManager.GetTrainSchedule().TrainScheduleID);
+
+                return View(schedule);
             }
-            return View();
+
+            return RedirectToAction("Index", "Home");
+
+
         }
 
         // GET: TrainManagement/TrainEdit/5
+        [Authorize]
         public ActionResult TrainEdit(int id)
         {
-            TrainVM train = _trainManager.GetTrainByID(id);
-            ViewBag.Title = "Edit Train";
-            return View(train);
+            User user = _userManager.GetUserByEmail(User.Identity.Name);
+            if (user.Roles.Contains("Manager"))
+            {
+                TrainVM train = _trainManager.GetTrainByID(id);
+                ViewBag.Title = "Edit Train";
+                return View(train);
+            }
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         // POST: TrainManagement/TrainEdit/5
+        [Authorize]
         [HttpPost]
         public ActionResult TrainEdit(int id, TrainVM trainVM)
         {
-            if (ModelState.IsValid)
-                try
-                {
-                    TrainVM old = _trainManager.GetTrainByID(id);
-                    _trainManager.EditTrain(old, trainVM);
+            User user = _userManager.GetUserByEmail(User.Identity.Name);
+            if (user.Roles.Contains("Manager"))
+            {
+                if (ModelState.IsValid)
+                    try
+                    {
+                        TrainVM old = _trainManager.GetTrainByID(id);
+                        _trainManager.EditTrain(old, trainVM);
 
-                    return RedirectToAction("Index");
-                }
-                catch
-                {
-                    return View();
-                }
-            return View();
+                        return RedirectToAction("Index");
+                    }
+                    catch
+                    {
+                        return View();
+                    }
+                return View();
+            }
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         // GET: TrainManagement/StationEdit
+        [Authorize]
         public ActionResult StationEdit(int stationID)
         {
-            Station station = _stationManager.GetStationByID(stationID);
-            ViewBag.Title = "Edit Station";
-            ViewBag.Types = _stationManager.GetStationTypes();
-            return View(station);
+            User user = _userManager.GetUserByEmail(User.Identity.Name);
+            if (user.Roles.Contains("Manager"))
+            {
+                Station station = _stationManager.GetStationByID(stationID);
+                ViewBag.Title = "Edit Station";
+                ViewBag.Types = _stationManager.GetStationTypes();
+                return View(station);
+            }
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         // POST: TrainManagement/StationEdit
+        [Authorize]
         [HttpPost]
         public ActionResult StationEdit(int stationID, Station station)
         {
-            if (ModelState.IsValid)
+            User user = _userManager.GetUserByEmail(User.Identity.Name);
+            if (user.Roles.Contains("Manager"))
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    Station old = _stationManager.GetStationByID(stationID);
-                    _stationManager.EditStation(old, station);
-                    return RedirectToAction("Index");
+                    try
+                    {
+                        Station old = _stationManager.GetStationByID(stationID);
+                        _stationManager.EditStation(old, station);
+                        return RedirectToAction("Index");
+                    }
+                    catch
+                    {
+                        return View();
+                    }
                 }
-                catch
-                {
-                    return View();
-                }
+                return View();
+
             }
-            return View();
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         // GET: TrainManagement/TrainCarsList
+        [Authorize]
         public ActionResult TrainCarsList(int trainID)
         {
-            List<TrainCarVM> cars = _trainManager.GetAllTrainCarVMsByTrainID(trainID);
-            ViewBag.Title = "Train Cars";
-            ViewBag.TrainID = trainID;
-            ViewBag.SeatManager = _seatManager;
-            return View(cars);
+            User user = _userManager.GetUserByEmail(User.Identity.Name);
+            if (user.Roles.Contains("Manager"))
+            {
+                List<TrainCarVM> cars = _trainManager.GetAllTrainCarVMsByTrainID(trainID);
+                ViewBag.Title = "Train Cars";
+                ViewBag.TrainID = trainID;
+                ViewBag.SeatManager = _seatManager;
+                return View(cars);
+            }
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         // GET: TrainManagement/TrainCarDetails
+        [Authorize]
         public ActionResult TrainCarDetails(int trainCarID, int trainID)
         {
-            List<TrainCarVM> cars = _trainManager.GetAllTrainCarVMsByTrainID(trainID);
-            bool found = false;
-            TrainCarVM trainCar = null;
-            for (int i = 0; i < cars.Count && !found; i++)
+            User user = _userManager.GetUserByEmail(User.Identity.Name);
+            if (user.Roles.Contains("Manager"))
             {
-                if(cars[i].TrainCarID == trainCarID)
+                List<TrainCarVM> cars = _trainManager.GetAllTrainCarVMsByTrainID(trainID);
+                bool found = false;
+                TrainCarVM trainCar = null;
+                for (int i = 0; i < cars.Count && !found; i++)
                 {
-                    trainCar = cars[i];
-                    found = true;
+                    if (cars[i].TrainCarID == trainCarID)
+                    {
+                        trainCar = cars[i];
+                        found = true;
+                    }
                 }
+
+                ViewBag.Title = "Train Car Details";
+                ViewBag.TrainID = trainID;
+                return View(trainCar);
             }
-            
-            ViewBag.Title = "Train Car Details";
-            ViewBag.TrainID = trainID;
-            return View(trainCar);
+
+            return RedirectToAction("Index", "Home");
+
 
         }
 
         // GET: TrainManagement/DeleteTrainCar
+        [Authorize]
         public ActionResult DeleteTrainCar(int trainCarID, int trainID)
         {
-            List<TrainCarVM> cars = _trainManager.GetAllTrainCarVMsByTrainID(trainID);
-            bool found = false;
-            TrainCarVM trainCar = null;
-            for (int i = 0; i < cars.Count && !found; i++)
+            User user = _userManager.GetUserByEmail(User.Identity.Name);
+            if (user.Roles.Contains("Manager"))
             {
-                if (cars[i].TrainCarID == trainCarID)
+                List<TrainCarVM> cars = _trainManager.GetAllTrainCarVMsByTrainID(trainID);
+                bool found = false;
+                TrainCarVM trainCar = null;
+                for (int i = 0; i < cars.Count && !found; i++)
                 {
-                    trainCar = cars[i];
-                    found = true;
+                    if (cars[i].TrainCarID == trainCarID)
+                    {
+                        trainCar = cars[i];
+                        found = true;
+                    }
                 }
+                ViewBag.Title = "Delete Train Car";
+                return View(trainCar);
             }
-            ViewBag.Title = "Delete Train Car";
-            return View(trainCar);
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         // POST: TrainManagement/DeleteTrainCar
+        [Authorize]
         [HttpPost]
         public ActionResult DeleteTrainCar(int trainCarID, int trainID,
             FormCollection collection)
@@ -196,7 +221,7 @@ namespace MVCPresentationLayer.Controllers
             try
             {
                 _trainManager.DeactivateTrainCar(trainCarID);
-                return RedirectToAction("TrainCarsList" , new { trainID = trainID });
+                return RedirectToAction("TrainCarsList", new { trainID = trainID });
             }
             catch
             {
